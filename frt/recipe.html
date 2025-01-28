@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/styles.css">
+  <title>Recipe Details</title>
+</head>
+<body>
+  <h1>Recipe Details</h1>
+  <div id="recipeContainer">
+    <!-- Recipe details will be dynamically added here -->
+  </div>
+  <a href="index.html">Back to Home</a>
+
+  <script>
+    // Fetch recipe details based on the query parameter
+    async function fetchRecipeDetails() {
+      const params = new URLSearchParams(window.location.search);
+      const recipeId = params.get("id");
+
+      if (!recipeId) {
+        document.getElementById("recipeContainer").innerHTML = "<p>Recipe not found!</p>";
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:5000/recipes/${recipeId}`);
+        const recipe = await response.json();
+
+        // Render the recipe details
+        const container = document.getElementById("recipeContainer");
+        container.innerHTML = `
+          <h2>${recipe.name}</h2>
+          <p><strong>Cuisine:</strong> ${recipe.cuisine}</p>
+          <p><strong>Difficulty:</strong> ${recipe.difficulty}</p>
+          <p><strong>Ingredients:</strong></p>
+          <ul>
+            ${recipe.ingredients.map((item) => `<li>${item}</li>`).join("")}
+          </ul>
+          <p><strong>Steps:</strong></p>
+          <p>${recipe.steps}</p>
+          <img src="http://localhost:5000${recipe.imageUrl}" alt="${recipe.name}" style="max-width: 100%; border-radius: 8px;" />
+        `;
+      } catch (error) {
+        console.error("Error fetching recipe details:", error);
+        document.getElementById("recipeContainer").innerHTML = "<p>Failed to load recipe details.</p>";
+      }
+    }
+
+    fetchRecipeDetails();
+  </script>
+</body>
+</html>

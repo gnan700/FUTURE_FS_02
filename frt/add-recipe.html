@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Sharing App</title>
+</head>
+<body>
+  <h1>Share a Recipe</h1>
+  <form id="recipe-form" enctype="multipart/form-data">
+    <label for="name">Recipe Name:</label><br>
+    <input type="text" id="name" name="name" required><br><br>
+
+    <label for="cuisine">Cuisine:</label><br>
+    <input type="text" id="cuisine" name="cuisine" required><br><br>
+
+    <label for="difficulty">Difficulty:</label><br>
+    <input type="text" id="difficulty" name="difficulty" required><br><br>
+
+    <label for="ingredients">Ingredients (separate with commas):</label><br>
+    <textarea id="ingredients" name="ingredients" required></textarea><br><br>
+
+    <label for="steps">Steps:</label><br>
+    <textarea id="steps" name="steps" required></textarea><br><br>
+
+    <label for="recipeImage">Upload Recipe Image:</label><br>
+    <input type="file" id="recipeImage" name="recipeImage" accept="image/*" required><br><br>
+
+    <button type="submit">Submit Recipe</button>
+  </form>
+
+  <script>
+    document.getElementById("recipe-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const formData = new FormData();
+      formData.append("name", document.getElementById("name").value);
+      formData.append("cuisine", document.getElementById("cuisine").value);
+      formData.append("difficulty", document.getElementById("difficulty").value);
+      formData.append("ingredients", document.getElementById("ingredients").value);
+      formData.append("steps", document.getElementById("steps").value);
+      formData.append("recipeImage", document.getElementById("recipeImage").files[0]);
+
+      fetch("http://localhost:5000/recipes", {
+        method: "POST",
+        body: formData,
+      })
+      .then(response => response.json())
+      .then(data => alert("Recipe added successfully!"))
+      .catch(error => alert("Error adding recipe: " + error));
+    });
+  </script>
+</body>
+</html>
